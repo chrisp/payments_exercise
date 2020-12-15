@@ -1,7 +1,7 @@
 class PaymentsController < ActionController::API
 
   rescue_from ActiveRecord::RecordInvalid do |exception|
-    render json: 'bad_request', status: :bad_request
+    render json: exception.message, status: :bad_request
   end
 
   def index

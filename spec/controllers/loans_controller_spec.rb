@@ -10,28 +10,29 @@ RSpec.describe LoansController, type: :controller do
     end
 
     context 'with loans and payment' do
-      let(:loan) { Loan.create!(
+      let!(:loan) { Loan.create!(
         funded_amount: 100.0) }
-      let(:loan2) { Loan.create!(
-        funded_amount: 80.0) }
-      let(:payment) { Payment.create!(
+      let!(:payment) { Payment.create!(
         amount: 10.0, loan: loan) }
 
       it 'should contain loans with payment data' do
-        [loan, loan2, payment]
         get :index
-
         parsed_loans = JSON.parse(response.body)
-
-        expect(parsed_loans.length).to eq(2)
         expect(parsed_loans[0]['funded_amount']).
           to eq(loan.funded_amount.to_s)
-        expect(parsed_loans[0]['remaining_amount']).
-          to eq(loan.remaining_amount.to_s)
-        expect(parsed_loans[1]['funded_amount']).
-          to eq(loan2.funded_amount.to_s)
-        expect(parsed_loans[1]['remaining_amount']).
-          to eq(loan2.remaining_amount.to_s)
+      end
+    end
+
+    context 'with loans and payment' do
+      let!(:loan) { Loan.create!(
+        funded_amount: 100.0) }
+      let!(:loan2) { Loan.create!(
+        funded_amount: 80.0) }
+
+      it 'should contain loans with payment data' do
+        get :index
+        parsed_loans = JSON.parse(response.body)
+        expect(parsed_loans.length).to eq(2)
       end
     end
   end

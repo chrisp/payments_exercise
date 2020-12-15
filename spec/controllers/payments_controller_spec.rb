@@ -58,6 +58,16 @@ RSpec.describe PaymentsController, type: :controller do
         loan.reload
         expect(loan.remaining_amount).to eq(90)
       end
+
+      it 'can not overpay' do
+        post :create, params: {
+          amount: '110',
+          loan_id: loan.id }
+        loan.reload
+        expect(response).to have_http_status(:bad_request)
+        expect(response.body).to eq(
+          "Validation failed: Amount over remaining amount")
+      end
     end
   end
 end
